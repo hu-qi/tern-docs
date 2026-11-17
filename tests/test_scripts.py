@@ -22,6 +22,7 @@ import fetch_docs  # noqa: E402
 import fix_anchors  # noqa: E402
 import fix_zh_assets  # noqa: E402
 import gen_site_map  # noqa: E402
+import normalize_zh  # noqa: E402
 
 
 class SlugifyTest(unittest.TestCase):
@@ -74,6 +75,24 @@ class SiteMapTest(unittest.TestCase):
     def test_collect_assets_ignores_remote_and_parent_paths(self) -> None:
         text = '<img src="https://example.com/x.png"><img src="../../outside.png">'
         self.assertEqual(fetch_docs.collect_assets(text, "index.md"), [])
+
+    def test_collect_assets_ignores_absolute_paths(self) -> None:
+        text = '<img src="/etc/passwd"><img src="../figures/a.png">'
+        self.assertEqual(fetch_docs.collect_assets(text, "concepts/a.md"), ["figures/a.png"])
+
+    def test_safe_join_keeps_paths_inside_the_output_root(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            inside = fetch_docs.safe_join(tmp, "concepts/architecture.md")
+            self.assertIsNotNone(inside)
+            assert inside is not None
+            self.assertTrue(inside.startswith(str(Path(tmp).resolve()) + os.sep))
+
+    def test_safe_join_rejects_absolute_and_parent_escapes(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            self.assertIsNone(fetch_docs.safe_join(tmp, "/etc/passwd"))
+            self.assertIsNone(fetch_docs.safe_join(tmp, "../outside.md"))
+            self.assertIsNone(fetch_docs.safe_join(tmp, "concepts/../../outside.md"))
+            self.assertIsNone(fetch_docs.safe_join(tmp, "concepts/../../../etc/passwd"))
 
 
 class ParityTest(unittest.TestCase):
@@ -163,12 +182,45 @@ class AssetRewriteTest(unittest.TestCase):
         self.assertEqual(fix_zh_assets.fix_value(value, "../../"), value)
 
 
+class NormalizeZhTest(unittest.TestCase):
+    def test_inserts_blank_line_before_heading_after_figure(self) -> None:
+        text = "<figure>\n<img src=\"x.png\">\n</figure>\n## 标题\n"
+        updated, inserted = normalize_zh.normalize(text)
+        self.assertEqual(inserted, 1)
+        self.assertEqual(updated, "<figure>\n<img src=\"x.png\">\n</figure>\n\n## 标题\n")
+
+    def test_inserts_blank_line_before_figure(self) -> None:
+        text = "正文。\n<figure>\n<img src=\"x.png\">\n</figure>\n"
+        updated, inserted = normalize_zh.normalize(text)
+        self.assertEqual(inserted, 1)
+        self.assertTrue(updated.startswith("正文。\n\n<figure>"))
+
+    def test_is_idempotent(self) -> None:
+        text = "正文。\n<figure>\n<img src=\"x.png\">\n</figure>\n## 标题\n"
+        once, _ = normalize_zh.normalize(text)
+        twice, inserted = normalize_zh.normalize(once)
+        self.assertEqual(inserted, 0)
+        self.assertEqual(twice, once)
+
+    def test_ignores_headings_inside_fenced_code(self) -> None:
+        text = "```\n代码\n## 不是标题\n```\n"
+        updated, inserted = normalize_zh.normalize(text)
+        self.assertEqual(inserted, 0)
+        self.assertEqual(updated, text)
+
+
 class LinkCheckTest(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
         self.dist = Path(self.tmp.name)
+        (self.dist / "assets").mkdir()
+        (self.dist / "assets" / "pic.hash.png").write_bytes(b"png")
         (self.dist / "index.html").write_text('<a href="/tern-docs/guide">Guide</a>', encoding="utf-8")
-        (self.dist / "guide.html").write_text('<h2 id="start">Start</h2>', encoding="utf-8")
+        (self.dist / "guide.html").write_text(
+            '<h2 id="start">Start</h2><img src="/tern-docs/assets/pic.hash.png"'
+            ' srcset="/tern-docs/assets/pic.hash.png 2x">',
+            encoding="utf-8",
+        )
 
     def tearDown(self) -> None:
         self.tmp.cleanup()
@@ -181,6 +233,30 @@ class LinkCheckTest(unittest.TestCase):
         current = self.dist / "index.html"
         self.assertEqual(check_links.find_page(self.dist, current, "guide"), self.dist / "guide.html")
         self.assertIsNone(check_links.find_page(self.dist, current, "missing"))
+
+    def test_img_and_srcset_targets_count_and_resolve(self) -> None:
+        checked, assets, broken = check_links.check_dist(self.dist)
+        self.assertEqual(broken, [])
+        self.assertGreaterEqual(checked, 1)
+        self.assertEqual(assets, 1)
+
+    def test_missing_img_and_srcset_targets_fail(self) -> None:
+        (self.dist / "broken.html").write_text(
+            '<figure><img src="../figures/missing.light.png"'
+            ' srcset="../figures/missing.light.png 2x, ../figures/missing.dark.png 2x">'
+            "</figure>",
+            encoding="utf-8",
+        )
+        _, _, broken = check_links.check_dist(self.dist)
+        self.assertEqual(len(broken), 2)
+        self.assertTrue(all("missing image asset" in item for item in broken))
+
+    def test_missing_img_target_in_zh_section_page_fails(self) -> None:
+        zh_dir = self.dist / "zh" / "elements"
+        zh_dir.mkdir(parents=True)
+        (zh_dir / "text.html").write_text('<img src="../figures/a.png">', encoding="utf-8")
+        _, _, broken = check_links.check_dist(self.dist)
+        self.assertTrue(any("zh/elements/text.html" in item for item in broken))
 
 
 class SiteMapDocumentTest(unittest.TestCase):

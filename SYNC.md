@@ -47,9 +47,10 @@ git diff --stat -- docs/
 npm run docs:fallback   # 缺失译文补英文回退页（带"尚未翻译"标记）
 npm run docs:anchors    # 中英标题锚点对齐（英文补 {#id}，中文镜像）
 npm run docs:assets     # 中文页面插图路径修正到 docs/figures/
+npm run docs:normalize  # 补全标题/插图块前后的空行（构建前自动执行）
 npm run docs:check      # 结构 / 代码块 / 行内代码 / 链接 / 篇幅一致性
-npm run docs:build      # 死链检查 + 静态构建
-npm run docs:links      # 构建产物站内链接与锚点校验
+npm run docs:build      # 静态构建
+npm run docs:links      # 构建产物站内链接、锚点与插图校验
 npm run docs:map        # 刷新 SITE_MAP.md（翻译状态与覆盖率）
 ```
 

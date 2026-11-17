@@ -18,9 +18,11 @@ scripts/sync_fallback.py 为尚未翻译的页面生成英文回退页
 scripts/fix_anchors.py   对齐中英标题锚点（显式 {#id}）
 scripts/fix_zh_assets.py 修正中文页面的插图相对路径
 scripts/check_parity.py  校验中英页面结构、代码块、行内代码、链接一致
-scripts/check_links.py   校验构建产物中的站内链接与锚点
+scripts/check_links.py   校验构建产物中的站内链接、锚点与插图
+scripts/normalize_zh.py  补全中文页面标题/插图块前后的空行
 scripts/gen_site_map.py  生成 SITE_MAP.md
-tests/test_scripts.py    上述脚本的单元测试
+tests/test_scripts.py    上述 Python 脚本的单元测试
+tests/escape-vue.test.mjs  Vue 模板转义插件（escape-vue.mjs）的 node 单元测试
 site-map.json            全站页面清单（章节 + 标题，用于生成侧边栏）
 TRANSLATION.md           翻译约定与术语表
 SITE_MAP.md              全站页面清单与翻译状态
@@ -43,10 +45,11 @@ npm run docs:fetch      # 重新抓取上游页面与插图，刷新 site-map.js
 npm run docs:fallback   # 为缺失的译文生成英文回退页
 npm run docs:anchors    # 对齐中英标题锚点（英文补 {#id}，中文镜像同一 id）
 npm run docs:assets     # 修正中文页面的插图相对路径
+npm run docs:normalize  # 补全中文页面标题/插图块前后的空行
 npm run docs:check      # 中英页面一致性校验（CI 在构建前执行）
-npm run docs:links      # 构建产物站内链接/锚点校验（CI 在构建后执行）
+npm run docs:links      # 构建产物站内链接/锚点/插图校验（CI 在构建后执行）
 npm run docs:map        # 重新生成 SITE_MAP.md
-npm run test:scripts    # 文档工具链单元测试
+npm test                # 文档工具链单元测试（Python + node）
 ```
 
 ## 翻译
@@ -63,9 +66,9 @@ npm run test:scripts    # 文档工具链单元测试
 `ci/github-pages-deploy.yml`（启用时移动到 `.github/workflows/deploy.yml`，见 `ci/README.md`）
 在 `main` 分支推送（或手动 `workflow_dispatch`）时执行：
 
-1. `npm ci` + `npm run test:scripts`（工具链单元测试）
-2. `npm run docs:fallback` + `docs:anchors` + `docs:assets` + `docs:check`（译文一致性闸门）
-3. `npm run docs:build` + `docs:links`（构建与站内链接校验）
+1. `npm ci` + `npm test`（工具链单元测试，含 Python 脚本与 Vue 转义插件）
+2. `npm run docs:fallback` + `docs:anchors` + `docs:assets` + `docs:normalize` + `docs:check`（译文一致性闸门）
+3. `npm run docs:build` + `docs:links`（构建与站内链接/插图校验）
 4. `actions/upload-pages-artifact` + `actions/deploy-pages` 发布到 GitHub Pages
 
 首次部署需要两项一次性人工操作：① 将 `ci/github-pages-deploy.yml` 移动为

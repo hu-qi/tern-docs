@@ -61,9 +61,13 @@
 npm run docs:check    # 逐页核对：页面存在、标题结构、代码块、行内代码、链接目标
 npm run docs:anchors  # 对齐中英标题锚点（中文标题镜像英文 {#id}）
 npm run docs:assets   # 修正中文页面插图相对路径
-npm run docs:build    # 构建全站（包含死链检查）
-npm run docs:links    # 校验构建产物中的站内链接与锚点
+npm run docs:normalize # 补全标题/插图块前后的空行（构建前自动执行）
+npm run docs:build    # 构建全站
+npm run docs:links    # 校验构建产物中的站内链接、锚点与插图
 ```
+
+`docs:normalize` 与 `docs:assets` 会通过 `predocs:build` 在每次构建前自动执行，
+它们只调整空白与插图路径，可重复运行且不会改动正文。
 
 `docs:check` 会比对 `docs/` 与 `docs/zh/` 的每一页：标题层级序列一致、围栏代码块
 逐字一致、原文的行内代码在译文中全部存在、链接目标列表一致。任一页不符合即返回非 0，

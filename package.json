@@ -1,0 +1,24 @@
+{
+  "name": "tern-docs",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Tern Plugin SDK documentation (English + Simplified Chinese)",
+  "type": "module",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "docs:fetch": "python3 scripts/fetch_docs.py",
+    "docs:fallback": "python3 scripts/sync_fallback.py",
+    "docs:anchors": "python3 scripts/fix_anchors.py",
+    "docs:assets": "python3 scripts/fix_zh_assets.py",
+    "docs:map": "python3 scripts/gen_site_map.py",
+    "docs:check": "python3 scripts/check_parity.py",
+    "docs:links": "python3 scripts/check_links.py",
+    "test:scripts": "python3 -m unittest discover -s tests",
+    "predocs:build": "python3 scripts/fix_zh_assets.py"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.3"
+  }
+}

@@ -32,13 +32,14 @@ jobs:
         run: npm ci
 
       - name: Test documentation tooling
-        run: npm run test:scripts
+        run: npm test
 
       - name: Prepare and check translations
         run: |
           npm run docs:fallback
           npm run docs:anchors
           npm run docs:assets
+          npm run docs:normalize
           npm run docs:check
 
       - name: Build site

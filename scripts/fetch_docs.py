@@ -101,6 +101,22 @@ ASSET_ATTR = re.compile(r'(?:src|href)="([^"]+)"')
 SRCSET_ATTR = re.compile(r'srcset="([^"]+)"')
 
 
+def safe_join(root: str, relative: str) -> str | None:
+    """Join `relative` onto `root`, rejecting absolute paths and `..` escapes.
+
+    Returns the real (symlink-resolved) destination path, or ``None`` when the
+    result would fall outside `root`. Used so a compromised upstream table of
+    contents or page cannot write anywhere else on disk.
+    """
+    if not relative or os.path.isabs(relative):
+        return None
+    root_real = os.path.realpath(root)
+    target = os.path.realpath(os.path.join(root_real, relative))
+    if target != root_real and not target.startswith(root_real + os.sep):
+        return None
+    return target
+
+
 def collect_assets(text: str, page_path: str) -> list[str]:
     """Relative image/asset paths referenced by a page, in page-relative form."""
     targets: list[str] = []
@@ -118,8 +134,10 @@ def collect_assets(text: str, page_path: str) -> list[str]:
             continue
         if " " in target:
             continue
+        if os.path.isabs(target):
+            continue
         relative = os.path.normpath(os.path.join(page_dir, target))
-        if relative.startswith(".."):
+        if relative == ".." or relative.startswith(".." + os.sep) or os.path.isabs(relative):
             continue
         if relative not in assets:
             assets.append(relative)
@@ -159,11 +177,18 @@ def main() -> int:
         print("error: no pages found in upstream table of contents", file=sys.stderr)
         return 1
 
+    unsafe_pages = [page["path"] for page in pages if safe_join(args.out, page["path"]) is None]
+    if unsafe_pages:
+        print("error: upstream table of contents escapes the output directory:", file=sys.stderr)
+        for path in unsafe_pages[:20]:
+            print(f"  - {path}", file=sys.stderr)
+        return 1
+
     failures: list[str] = []
     assets: list[str] = []
     for page in pages:
         url = base + page["path"]
-        destination = os.path.join(args.out, page["path"])
+        destination = safe_join(args.out, page["path"])
         try:
             text = fetch(url)
         except Exception as error:
@@ -181,7 +206,11 @@ def main() -> int:
     for relative in sorted(set(assets)):
         if "\u2026" in relative:  # placeholder path from a truncated code sample
             continue
-        destination = os.path.join(args.out, relative)
+        destination = safe_join(args.out, relative)
+        if destination is None:
+            print(f"SKIP {relative}: path escapes the output directory", file=sys.stderr)
+            asset_failures.append(relative)
+            continue
         url = base + urllib.parse.quote(relative.replace(os.sep, "/"))
         try:
             payload = fetch_binary(url)

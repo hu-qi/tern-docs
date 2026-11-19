@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs",
+    "docs:build": "vitepress build docs && python3 scripts/emit_markdown.py",
     "docs:preview": "vitepress preview docs",
     "docs:fetch": "python3 scripts/fetch_docs.py",
     "docs:fallback": "python3 scripts/sync_fallback.py",
@@ -18,10 +18,15 @@
     "docs:links": "python3 scripts/check_links.py",
     "test:scripts": "python3 -m unittest discover -s tests",
     "test:escape": "node --test tests/escape-vue.test.mjs",
-    "test": "npm run test:scripts && npm run test:escape",
-    "predocs:build": "python3 scripts/fix_zh_assets.py && python3 scripts/normalize_zh.py"
+    "test": "npm run test:scripts && npm run test:escape && npm run test:mermaid && npm run test:theme",
+    "predocs:build": "python3 scripts/fix_zh_assets.py && python3 scripts/normalize_zh.py",
+    "docs:md": "python3 scripts/emit_markdown.py",
+    "docs:upstream": "python3 scripts/diff_upstream.py",
+    "test:mermaid": "node --test tests/mermaid.test.mjs",
+    "test:theme": "node --test tests/theme.test.mjs"
   },
   "devDependencies": {
+    "mermaid": "^12.3.0",
     "vitepress": "^1.6.3"
   }
 }

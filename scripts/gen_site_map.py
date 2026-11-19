@@ -22,6 +22,10 @@ FALLBACK_MARK = "<!-- fallback: english source -->"
 
 
 ANCHOR_SUFFIX = re.compile(r"\s*\{#[^}]+\}\s*$")
+UPSTREAM_SECTION = re.compile(
+    r"<!-- upstream-diff:start -->.*?<!-- upstream-diff:end -->\n?",
+    re.S,
+)
 
 
 def first_heading(path: Path) -> str:
@@ -76,10 +80,19 @@ def main() -> int:
         "- 页面路径与上游 mdBook 目录一一对应，`docs/<path>` 为英文原文，`docs/zh/<path>` 为中文译文。",
         "- `回退英文` 表示该页尚未翻译，构建时由 `npm run docs:fallback` 以英文原文补齐并加提示。",
         "- 本文件由 `python3 scripts/gen_site_map.py` 生成，请勿手工编辑。",
+        "- 「上游对齐」小节由 `npm run docs:upstream` 生成，重跑 `docs:map` 时会保留。",
         "",
     ]
 
-    (ROOT / "SITE_MAP.md").write_text("\n".join(lines), encoding="utf-8")
+    previous = ""
+    target = ROOT / "SITE_MAP.md"
+    if target.exists():
+        previous = target.read_text(encoding="utf-8")
+        preserved = UPSTREAM_SECTION.search(previous)
+        if preserved:
+            lines += ["", preserved.group(0).rstrip("\n"), ""]
+
+    target.write_text("\n".join(lines), encoding="utf-8")
     print(f"SITE_MAP.md written: {total} pages, {translated} translated ({translated / total:.0%})")
     return 0
 

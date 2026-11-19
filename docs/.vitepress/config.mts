@@ -2,9 +2,11 @@ import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { defineConfig } from 'vitepress'
 import { escapeVueUnsafeTokens } from './escape-vue.mjs'
+import { mermaidFence } from './mermaid.mjs'
 
 const repoRoot = fileURLToPath(new URL('../..', import.meta.url))
 const siteMap = JSON.parse(fs.readFileSync(`${repoRoot}site-map.json`, 'utf-8'))
+const SITE_BASE = '/tern-docs/'
 
 const sectionTitlesZh: Record<string, string> = {
   Overview: '总览',
@@ -50,16 +52,31 @@ function buildSidebar(lang: 'en' | 'zh') {
 }
 
 export default defineConfig({
-  base: '/tern-docs/',
-  srcExclude: ['issue-1/**', 'issue-3/**'],
+  base: SITE_BASE,
+  srcExclude: ['issue-1/**', 'issue-3/**', 'issue-5/**'],
   cleanUrls: true,
   lastUpdated: false,
   title: 'Tern Plugin SDK',
   description: 'Tern Plugin SDK 文档 / Documentation — English & 简体中文',
   head: [['meta', { name: 'theme-color', content: '#08090d' }]],
+  transformHead({ pageData }) {
+    const relativePath = pageData.relativePath
+    if (!relativePath || !relativePath.endsWith('.md') || relativePath === '404.md') return []
+    return [
+      [
+        'link',
+        {
+          rel: 'alternate',
+          type: 'text/markdown',
+          href: `${SITE_BASE}${relativePath}`,
+        },
+      ],
+    ]
+  },
   markdown: {
     config(md) {
       escapeVueUnsafeTokens(md)
+      mermaidFence(md)
     },
   },
   locales: {

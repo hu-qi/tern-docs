@@ -95,3 +95,17 @@
 - 页面路径与上游 mdBook 目录一一对应，`docs/<path>` 为英文原文，`docs/zh/<path>` 为中文译文。
 - `回退英文` 表示该页尚未翻译，构建时由 `npm run docs:fallback` 以英文原文补齐并加提示。
 - 本文件由 `python3 scripts/gen_site_map.py` 生成，请勿手工编辑。
+- 「上游对齐」小节由 `npm run docs:upstream` 生成，重跑 `docs:map` 时会保留。
+
+
+<!-- upstream-diff:start -->
+## 上游对齐
+
+- 上游：<https://docs.stencil.so/tern/>（`toc-5868f7c9.js`）
+- 上游页面：**85**　本仓库页面：**85**
+- 页面差集：缺失 **0** / 多余 **0**
+- 内容比对：逐字节一致 **77**，仅 `{#slug}` 锚点差异 **8**，内容差异 **0**
+
+> 仅锚点差异来自 `scripts/fix_anchors.py` 追加的 `{#slug}`，比对前已归一化，不计为内容差异。
+> 由 `python3 scripts/diff_upstream.py` 生成，请勿手工编辑。
+<!-- upstream-diff:end -->

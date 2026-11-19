@@ -22,9 +22,14 @@ npm run docs:fetch
 ## 2. 查看差异
 
 ```bash
-git status --short docs/ site-map.json
+npm run docs:upstream   # 上游页面清单 + 逐页内容比对，结果写入 SITE_MAP.md
+git status --short docs/ site-map.json SITE_MAP.md
 git diff --stat -- docs/
 ```
+
+`docs:upstream` 会从上游首页解析当前 `toc-*.js`，与 `site-map.json` 做页面差集，
+再逐页比对内容；`{#slug}` 锚点差异由 `scripts/fix_anchors.py` 引入，归一化后不计为
+内容差异。缺失页/多余页/内容差异页会在命令输出与 `SITE_MAP.md` 的「上游对齐」小节列出。
 
 - 新增页面：`docs/` 下出现 `site-map.json` 中新的路径。
 - 变更页面：`docs/` 下已有文件内容变化（`git diff` 可见）。

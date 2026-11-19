@@ -13,7 +13,7 @@
 docs/                    英文原文（与上游 mdBook 逐页对应）
 docs/zh/                 简体中文译文（与 docs/ 路径一一对应）
 docs/figures/            上游页面引用的全部插图（由抓取脚本一并下载）
-docs/.vitepress/         VitePress 配置（locales / sidebar / 搜索 / Vue 转义）
+docs/.vitepress/         VitePress 配置与主题（locales / sidebar / 搜索 / Vue 转义 / mermaid / 打印）
 scripts/fetch_docs.py    抓取上游全部页面与插图（HTML 对应的 .md 源）
 scripts/sync_fallback.py 为尚未翻译的页面生成英文回退页
 scripts/fix_anchors.py   对齐中英标题锚点（显式 {#id}）
@@ -22,6 +22,8 @@ scripts/check_parity.py  校验中英页面结构、代码块、行内代码、�
 scripts/check_links.py   校验构建产物中的站内链接、锚点与插图
 scripts/normalize_zh.py  补全中文页面标题/插图块前后的空行
 scripts/gen_site_map.py  生成 SITE_MAP.md
+scripts/diff_upstream.py 比对上游页面清单与内容（npm run docs:upstream）
+scripts/emit_markdown.py 构建后把 .md 原文复制进 dist（npm run docs:md）
 tests/test_scripts.py    上述 Python 脚本的单元测试
 tests/escape-vue.test.mjs  Vue 模板转义插件（escape-vue.mjs）的 node 单元测试
 site-map.json            全站页面清单（章节 + 标题，用于生成侧边栏）
@@ -50,8 +52,23 @@ npm run docs:normalize  # 补全中文页面标题/插图块前后的空行
 npm run docs:check      # 中英页面一致性校验（CI 在构建前执行）
 npm run docs:links      # 构建产物站内链接/锚点/插图校验（CI 在构建后执行）
 npm run docs:map        # 重新生成 SITE_MAP.md
+npm run docs:upstream   # 与上游页面清单/内容比对，结果写入 SITE_MAP.md
+npm run docs:md         # 单独把 .md 原文复制进构建产物（docs:build 已包含）
 npm test                # 文档工具链单元测试（Python + node）
 ```
+
+## 阅读与取用
+
+- **图**：正文里的 ```` ```mermaid ```` 围栏在浏览器中渲染为 SVG（英文站与中文站一致）；
+  图源以组件 prop 传入，不影响现有 Vue 转义规则。
+- **原文**：每个页面同时产出同路径的 `.md` 源文件，页面 `<head>` 注入
+  `<link rel="alternate" type="text/markdown">`；例如
+  `/tern-docs/concepts/architecture.md` 与 `/tern-docs/zh/concepts/architecture.md`
+  直接返回 Markdown 原文。
+- **复制本页**：正文末尾「复制本页 / Copy page」按钮读取本语言 `.md` 原文写入剪贴板，
+  读取失败时降级为新标签页打开原文。
+- **打印**：「打印本页 / Print page」调用浏览器打印；打印样式隐藏导航、侧边栏与页脚，
+  代码块、表格、插画不跨页截断。
 
 ## 翻译
 
@@ -70,7 +87,7 @@ npm test                # 文档工具链单元测试（Python + node）
 
 1. `npm ci` + `npm test`（工具链单元测试，含 Python 脚本与 Vue 转义插件）
 2. `npm run docs:fallback` + `docs:anchors` + `docs:assets` + `docs:normalize` + `docs:check`（译文一致性闸门）
-3. `npm run docs:build` + `docs:links`（构建与站内链接/插图校验）
+3. `npm run docs:build`（构建，并把 `.md` 原文复制进产物）+ `docs:links`（站内链接/插图校验）
 4. `actions/upload-pages-artifact` + `actions/deploy-pages` 发布到 GitHub Pages
 
 首次发布前需在 **Settings → Pages → Build and deployment** 中将 **Source** 设为 **GitHub Actions**，否则

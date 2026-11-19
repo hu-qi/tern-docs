@@ -61,8 +61,9 @@ git add docs site-map.json SITE_MAP.md
 git commit -m "docs: sync upstream tern documentation"
 ```
 
-提交到 `main` 后 GitHub Actions 会自动构建并部署到 GitHub Pages（需先把
-`ci/github-pages-deploy.yml` 移为 `.github/workflows/deploy.yml`，见 `ci/README.md`）。
+提交到 `main` 后 GitHub Actions 会自动构建并部署到 GitHub Pages（工作流
+`.github/workflows/deploy.yml` 待维护者补交后生效，补交前推送不会触发部署；`ci/README.md`
+记录了 `workflow` 权限背景）。
 
 ## 5. 翻译覆盖率
 

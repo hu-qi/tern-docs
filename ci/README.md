@@ -1,23 +1,35 @@
 # GitHub Pages 部署工作流
 
-此文件与 `.github/workflows/deploy.yml` 的内容完全一致，放在 `ci/` 下是因为创建
-`.github/workflows/` 下的文件需要 GitHub token 具备 `workflow` 权限；当前自动化任务的
-token 不具备该权限，推送会被拒绝（`refusing to allow a Personal Access Token to create or
-update workflow ... without workflow scope`）。
+部署工作流的规范位置是 `.github/workflows/deploy.yml`——GitHub 只识别 `.github/workflows/`
+下的工作流，工作流放在该位置才会被触发。
 
-启用方式（二选一，均为一次性人工操作）：
+**当前状态：该文件尚未进入仓库（待补交）。** 创建或更新 `.github/workflows/` 下的文件需要
+GitHub token 具备 `workflow` 权限，自动化账号的推送会被拒绝：
 
-1. 仓库 **Settings → Actions → General** 允许 Actions 后，把本文件移动到工作流目录：
-   ```bash
-   git mv ci/github-pages-deploy.yml .github/workflows/deploy.yml
-   git commit -m "ci: enable GitHub Pages deployment"
-   git push
-   ```
-2. 或在 GitHub 网页端直接新建 `.github/workflows/deploy.yml`，粘贴本文件内容。
+```
+! [remote rejected] feat/issue-3 -> feat/issue-3
+  (refusing to allow a Personal Access Token to create or update workflow
+   `.github/workflows/deploy.yml` without `workflow` scope)
+```
 
-首次部署还需要在 **Settings → Pages → Build and deployment → Source** 选择
-**GitHub Actions**，否则 `deploy` 作业会因 Pages 未启用而失败。
+因此该文件需由具备 `workflow` 权限的维护者账号补交（内容见 PR #4 描述，与已删除的
+`ci/github-pages-deploy.yml` 逐字一致，仅首行注释改为陈述当前状态）。**文件补交前，
+向 `main` 推送不会触发构建，`Actions` 中也不会有 `Deploy docs to GitHub Pages` 运行记录。**
 
-工作流内容：`push(main)` / `workflow_dispatch` → `npm ci` → 单元测试 →
-译文回退/锚点/插图规范化 → 译文一致性校验 → 构建 → 站内链接校验 →
-`actions/upload-pages-artifact` + `actions/deploy-pages`。
+补交后的行为：
+
+- 触发方式：向 `main` 推送，或在 Actions 页面手动执行 `workflow_dispatch`。
+- 工作流内容：`npm ci` → 单元测试 → 译文回退/锚点/插图规范化 → 译文一致性校验 →
+  构建 → 站内链接校验 → `actions/upload-pages-artifact` + `actions/deploy-pages`。
+  `build` / `deploy` 双作业，`concurrency: group: pages`，
+  `permissions: contents: read / pages: write / id-token: write`。
+- 首次发布前还需在 **Settings → Pages → Build and deployment → Source** 选择
+  **GitHub Actions**，否则 `deploy` 作业会因 Pages 未启用而失败。
+
+## 为什么不再保留 `ci/` 副本
+
+工作流一度以副本形式存放于 `ci/` 下，等待具备 `workflow` 权限的账号提交；该副本已删除，
+避免出现「仓库里有两份工作流、GitHub 只认其中一份」的分叉状态。规范内容以 PR #4 描述的
+YAML 为准，补交时直接落到 `.github/workflows/deploy.yml`。
+
+> 后续若由自动化账号修改该工作流，仍需 token 具备 `workflow` 权限；否则请由维护者账号提交。

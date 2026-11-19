@@ -9,6 +9,7 @@
 ## 目录结构
 
 ```
+.github/workflows/deploy.yml  GitHub Actions：push main 构建并发布 GitHub Pages（待补交，见「部署」）
 docs/                    英文原文（与上游 mdBook 逐页对应）
 docs/zh/                 简体中文译文（与 docs/ 路径一一对应）
 docs/figures/            上游页面引用的全部插图（由抓取脚本一并下载）
@@ -63,18 +64,29 @@ npm test                # 文档工具链单元测试（Python + node）
 
 ## 部署
 
-`ci/github-pages-deploy.yml`（启用时移动到 `.github/workflows/deploy.yml`，见 `ci/README.md`）
-在 `main` 分支推送（或手动 `workflow_dispatch`）时执行：
+部署将由 GitHub Actions 工作流 `.github/workflows/deploy.yml` 完成。**该文件目前尚未进入仓库
+（待补交）**：GitHub 拒绝由自动化账号创建或更新 `.github/workflows/` 下的文件（token 缺
+`workflow` 作用域），需由具备该权限的维护者账号补交，内容见 PR #4 描述（与迁移前
+`ci/github-pages-deploy.yml` 逐字一致，仅首行注释改为陈述当前状态）。**在文件补交之前，
+向 `main` 推送不会触发任何构建或发布。**
+
+该工作流在 `main` 分支推送（或手动 `workflow_dispatch`）时执行：
 
 1. `npm ci` + `npm test`（工具链单元测试，含 Python 脚本与 Vue 转义插件）
 2. `npm run docs:fallback` + `docs:anchors` + `docs:assets` + `docs:normalize` + `docs:check`（译文一致性闸门）
 3. `npm run docs:build` + `docs:links`（构建与站内链接/插图校验）
 4. `actions/upload-pages-artifact` + `actions/deploy-pages` 发布到 GitHub Pages
 
-首次部署需要两项一次性人工操作：① 将 `ci/github-pages-deploy.yml` 移动为
-`.github/workflows/deploy.yml`（创建该目录下的文件需要 token 具备 `workflow` 权限）；
-② 在 **Settings → Pages → Build and deployment** 中将 **Source** 设为 **GitHub Actions**。
-否则 `deploy` 作业会因工作流未启用或 Pages 未启用而失败。
+首次发布前还需要两项一次性人工操作：
+
+1. 由具备 `workflow` 权限的账号补交 `.github/workflows/deploy.yml`；
+2. 在 **Settings → Pages → Build and deployment** 中将 **Source** 设为 **GitHub Actions**，否则
+   `deploy` 作业会因 Pages 未启用而失败。
+
+两步完成后，每次向 `main` 推送或手动触发 `workflow_dispatch` 都会重新构建并发布
+`https://<owner>.github.io/tern-docs/`（英文）与 `/zh/`（中文）；`concurrency: pages`
+保证同一时间只有一次部署，重复发布不会冲突。工作流文件的权限背景见
+[`ci/README.md`](ci/README.md)。
 
 ## 上游同步
 

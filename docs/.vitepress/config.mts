@@ -51,7 +51,7 @@ function buildSidebar(lang: 'en' | 'zh') {
 
 export default defineConfig({
   base: '/tern-docs/',
-  srcExclude: ['issue-1/**'],
+  srcExclude: ['issue-1/**', 'issue-3/**'],
   cleanUrls: true,
   lastUpdated: false,
   title: 'Tern Plugin SDK',

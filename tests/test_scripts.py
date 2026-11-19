@@ -278,26 +278,73 @@ class SiteMapDocumentTest(unittest.TestCase):
 class WorkflowLocationTest(unittest.TestCase):
     """部署工作流只允许一个规范位置：.github/workflows/deploy.yml。
 
-    工作流文件的提交需要 token 具备 `workflow` 权限，因此本用例在文件尚未补交时
-    只校验「ci/ 下的过渡副本已移除」与「文档指向规范路径」；文件已存在时再校验
-    触发条件、权限、并发与双作业没有漂移。
+    工作流文件需要 token 具备 `workflow` 权限才能提交，本分支由维护者账号补交。因此本用例
+    断言的是「文件实际状态」与「文档口径」必须一致，而不是在文件缺失时静默跳过：
+
+    - 文件缺失 → 文档必须声明「待补交」，且不得出现「已生效 / 已启用」这类既成事实表述，
+      否则读者会按文档预期等待一个永远不会触发的构建；
+    - 文件存在 → 文档不得再称待补交，并逐项核对触发条件、权限、并发与双作业没有漂移。
     """
 
     WORKFLOW = ROOT / ".github" / "workflows" / "deploy.yml"
     LEGACY = ROOT / "ci" / "github-pages-deploy.yml"
+    DOCS = ("README.md", os.path.join("ci", "README.md"))
+    PENDING_MARKER = "待补交"
+    LIVE_CLAIMS = ("已生效", "已启用", "会自动构建并部署")
+
+    def _doc(self, name: str) -> str:
+        return (ROOT / name).read_text(encoding="utf-8")
 
     def test_legacy_copy_removed(self) -> None:
         self.assertFalse(self.LEGACY.exists(), "ci/ 下不应再保留工作流副本")
 
     def test_docs_point_to_canonical_workflow(self) -> None:
-        for name in ("README.md", os.path.join("ci", "README.md")):
-            text = (ROOT / name).read_text(encoding="utf-8")
+        for name in self.DOCS:
+            text = self._doc(name)
             self.assertIn(".github/workflows/deploy.yml", text, f"{name} 未指向规范工作流路径")
             self.assertNotIn("移动", text, f"{name} 仍在描述手工移动工作流文件")
+            if not self.WORKFLOW.is_file():
+                self.assertNotIn(
+                    "](.github/workflows/deploy.yml)",
+                    text,
+                    f"{name} 用相对链接指向尚不存在的文件（点击即 404）",
+                )
+
+    def test_docs_state_matches_workflow_presence(self) -> None:
+        """文件存在与否必须与文档口径一致；这是「工作流存在」验收项的红绿信号。"""
+        present = self.WORKFLOW.is_file()
+        for name in self.DOCS:
+            text = self._doc(name)
+            if present:
+                self.assertNotIn(
+                    self.PENDING_MARKER,
+                    text,
+                    f"{name} 仍称工作流待补交，但 .github/workflows/deploy.yml 已存在",
+                )
+            else:
+                self.assertIn(
+                    self.PENDING_MARKER,
+                    text,
+                    f"{name} 未声明工作流待补交，读者会误以为部署已生效",
+                )
+                for claim in self.LIVE_CLAIMS:
+                    self.assertNotIn(
+                        claim,
+                        text,
+                        f"{name} 在工作流文件缺失时仍声称「{claim}」",
+                    )
+        if not present:
+            self.assertIn(
+                "不会触发",
+                self._doc("README.md"),
+                "README.md 未说明补交前推送不会触发构建",
+            )
 
     def test_workflow_keeps_triggers_permissions_and_jobs(self) -> None:
         if not self.WORKFLOW.is_file():
-            self.skipTest(".github/workflows/deploy.yml 尚未补交，跳过作业图核对")
+            # 文件缺失属阻塞态，但必须由文档口径显式披露（见上一个用例），不得静默 skip
+            self.assertIn(self.PENDING_MARKER, self._doc("README.md"))
+            return
         text = self.WORKFLOW.read_text(encoding="utf-8")
         for expected in (
             "name: Deploy docs to GitHub Pages",

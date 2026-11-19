@@ -1,0 +1,732 @@
+{
+  "source": "https://docs.stencil.so/tern/",
+  "sections": [
+    {
+      "title": "Overview",
+      "pages": [
+        {
+          "path": "index.md",
+          "title": "Overview"
+        }
+      ]
+    },
+    {
+      "title": "Concepts",
+      "pages": [
+        {
+          "path": "concepts/architecture.md",
+          "title": "Architecture"
+        },
+        {
+          "path": "concepts/packages.md",
+          "title": "Packages and Manifests"
+        },
+        {
+          "path": "concepts/lifecycle.md",
+          "title": "Lifecycle and Reload"
+        },
+        {
+          "path": "concepts/runtime.md",
+          "title": "Runtime, Budgets, and JIT"
+        },
+        {
+          "path": "concepts/security.md",
+          "title": "Trust and Security"
+        },
+        {
+          "path": "concepts/support-matrix.md",
+          "title": "Support Matrix"
+        }
+      ]
+    },
+    {
+      "title": "Guides",
+      "pages": [
+        {
+          "path": "guides/getting-started.md",
+          "title": "Getting Started"
+        },
+        {
+          "path": "guides/design.md",
+          "title": "Designing Views"
+        },
+        {
+          "path": "guides/lenses.md",
+          "title": "Command Lenses"
+        },
+        {
+          "path": "guides/blocks.md",
+          "title": "Blocks"
+        },
+        {
+          "path": "guides/views.md",
+          "title": "Building Views"
+        },
+        {
+          "path": "guides/hooks.md",
+          "title": "Host Hooks and the Spawn Filter"
+        },
+        {
+          "path": "guides/commands.md",
+          "title": "Commands, Keys, and Overrides"
+        },
+        {
+          "path": "guides/carly.md",
+          "title": "Extending Carly"
+        },
+        {
+          "path": "guides/routing.md",
+          "title": "Routing Opens and Links"
+        },
+        {
+          "path": "guides/chrome.md",
+          "title": "Chrome and Styling"
+        },
+        {
+          "path": "guides/themes.md",
+          "title": "Custom Themes"
+        },
+        {
+          "path": "guides/layout.md",
+          "title": "Layout and Workspaces"
+        },
+        {
+          "path": "guides/io.md",
+          "title": "Files, Processes, and Storage"
+        },
+        {
+          "path": "guides/debugging.md",
+          "title": "Debugging"
+        },
+        {
+          "path": "guides/distribution.md",
+          "title": "Distribution"
+        }
+      ]
+    },
+    {
+      "title": "Elements",
+      "pages": [
+        {
+          "path": "elements/index.md",
+          "title": "Elements"
+        },
+        {
+          "path": "elements/layout.md",
+          "title": "Layout"
+        },
+        {
+          "path": "elements/text.md",
+          "title": "Text and Code"
+        },
+        {
+          "path": "elements/data.md",
+          "title": "Data"
+        },
+        {
+          "path": "elements/lists.md",
+          "title": "Lists, Menus and Navigation"
+        },
+        {
+          "path": "elements/motion.md",
+          "title": "Progress and Motion"
+        },
+        {
+          "path": "elements/input.md",
+          "title": "Inputs and Buttons"
+        },
+        {
+          "path": "elements/chrome.md",
+          "title": "Bars, Toasts and Overlays"
+        },
+        {
+          "path": "elements/work.md",
+          "title": "Agent, Chat and Task Kinds"
+        },
+        {
+          "path": "elements/el.md",
+          "title": "HTML Elements"
+        }
+      ]
+    },
+    {
+      "title": "Styles",
+      "pages": [
+        {
+          "path": "styles/index.md",
+          "title": "Styling Views"
+        },
+        {
+          "path": "styles/variables.md",
+          "title": "CSS Variables"
+        },
+        {
+          "path": "styles/css.md",
+          "title": "Supported CSS"
+        }
+      ]
+    },
+    {
+      "title": "Surface Protocol",
+      "pages": [
+        {
+          "path": "protocol/index.md",
+          "title": "Surface Protocol"
+        },
+        {
+          "path": "protocol/transport.md",
+          "title": "Transport"
+        },
+        {
+          "path": "protocol/handshake.md",
+          "title": "Handshake"
+        },
+        {
+          "path": "protocol/surfaces.md",
+          "title": "Surfaces"
+        },
+        {
+          "path": "protocol/documents.md",
+          "title": "Documents and Frames"
+        },
+        {
+          "path": "protocol/input.md",
+          "title": "Input and Events"
+        },
+        {
+          "path": "protocol/theme.md",
+          "title": "Stylesheets and Icons"
+        },
+        {
+          "path": "protocol/operations.md",
+          "title": "Flow Control, Persistence and Security"
+        },
+        {
+          "path": "protocol/sdks.md",
+          "title": "SDKs"
+        }
+      ]
+    },
+    {
+      "title": "Examples",
+      "pages": [
+        {
+          "path": "examples/index.md",
+          "title": "Example Plugins"
+        },
+        {
+          "path": "examples/terraform.md",
+          "title": "Terraform Plans"
+        },
+        {
+          "path": "examples/review-queue.md",
+          "title": "Review Queue"
+        },
+        {
+          "path": "examples/jsonx.md",
+          "title": "JSON Explorer"
+        },
+        {
+          "path": "examples/longrun.md",
+          "title": "Long-Running Commands"
+        },
+        {
+          "path": "examples/dirvars.md",
+          "title": "Directory Variables"
+        },
+        {
+          "path": "examples/workspaces.md",
+          "title": "Project Workspaces"
+        }
+      ]
+    },
+    {
+      "title": "Scripts",
+      "pages": [
+        {
+          "path": "scripts/index.md",
+          "title": "Scripts"
+        },
+        {
+          "path": "scripts/harness.md",
+          "title": "Harness Commands"
+        },
+        {
+          "path": "scripts/control.md",
+          "title": "Control Commands"
+        },
+        {
+          "path": "scripts/terminal.md",
+          "title": "Terminal and Panes"
+        },
+        {
+          "path": "scripts/navigation.md",
+          "title": "Tabs and Navigation"
+        },
+        {
+          "path": "scripts/sessions.md",
+          "title": "Sessions and Blocks"
+        },
+        {
+          "path": "scripts/remote.md",
+          "title": "Remote Hosts"
+        },
+        {
+          "path": "scripts/prefs.md",
+          "title": "Preferences"
+        },
+        {
+          "path": "scripts/browser.md",
+          "title": "Browser Blocks"
+        },
+        {
+          "path": "scripts/pip.md",
+          "title": "Pictures in Picture"
+        },
+        {
+          "path": "scripts/files.md",
+          "title": "Files Pane"
+        },
+        {
+          "path": "scripts/file.md",
+          "title": "File Blocks"
+        },
+        {
+          "path": "scripts/procs.md",
+          "title": "Task Manager"
+        },
+        {
+          "path": "scripts/screen.md",
+          "title": "Screen Blocks"
+        },
+        {
+          "path": "scripts/git.md",
+          "title": "Git Blocks"
+        },
+        {
+          "path": "scripts/sqlite.md",
+          "title": "SQLite Blocks"
+        },
+        {
+          "path": "scripts/notebook.md",
+          "title": "Notebook Blocks"
+        },
+        {
+          "path": "scripts/board.md",
+          "title": "Board Blocks"
+        },
+        {
+          "path": "scripts/canvas.md",
+          "title": "Canvas Blocks"
+        },
+        {
+          "path": "scripts/profile.md",
+          "title": "Profile Blocks"
+        },
+        {
+          "path": "scripts/status.md",
+          "title": "Account, Updates and Kickoff"
+        },
+        {
+          "path": "scripts/carly.md",
+          "title": "Carly"
+        }
+      ]
+    },
+    {
+      "title": "Reference",
+      "pages": [
+        {
+          "path": "reference/api.md",
+          "title": "API Reference"
+        },
+        {
+          "path": "reference/api-shared.md",
+          "title": "Shared API"
+        },
+        {
+          "path": "reference/api-host.md",
+          "title": "Host API"
+        },
+        {
+          "path": "reference/api-window.md",
+          "title": "Window API"
+        },
+        {
+          "path": "reference/ui.md",
+          "title": "UI Builders"
+        },
+        {
+          "path": "reference/manifest.md",
+          "title": "Manifest Reference"
+        },
+        {
+          "path": "reference/events.md",
+          "title": "Events"
+        },
+        {
+          "path": "reference/actions.md",
+          "title": "Built-in Actions"
+        },
+        {
+          "path": "reference/cli.md",
+          "title": "Command Line"
+        },
+        {
+          "path": "reference/limits.md",
+          "title": "Limits"
+        },
+        {
+          "path": "reference/errors.md",
+          "title": "Errors"
+        },
+        {
+          "path": "reference/glossary.md",
+          "title": "Glossary"
+        }
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "path": "index.md",
+      "title": "Overview"
+    },
+    {
+      "path": "concepts/architecture.md",
+      "title": "Architecture"
+    },
+    {
+      "path": "concepts/packages.md",
+      "title": "Packages and Manifests"
+    },
+    {
+      "path": "concepts/lifecycle.md",
+      "title": "Lifecycle and Reload"
+    },
+    {
+      "path": "concepts/runtime.md",
+      "title": "Runtime, Budgets, and JIT"
+    },
+    {
+      "path": "concepts/security.md",
+      "title": "Trust and Security"
+    },
+    {
+      "path": "concepts/support-matrix.md",
+      "title": "Support Matrix"
+    },
+    {
+      "path": "guides/getting-started.md",
+      "title": "Getting Started"
+    },
+    {
+      "path": "guides/design.md",
+      "title": "Designing Views"
+    },
+    {
+      "path": "guides/lenses.md",
+      "title": "Command Lenses"
+    },
+    {
+      "path": "guides/blocks.md",
+      "title": "Blocks"
+    },
+    {
+      "path": "guides/views.md",
+      "title": "Building Views"
+    },
+    {
+      "path": "guides/hooks.md",
+      "title": "Host Hooks and the Spawn Filter"
+    },
+    {
+      "path": "guides/commands.md",
+      "title": "Commands, Keys, and Overrides"
+    },
+    {
+      "path": "guides/carly.md",
+      "title": "Extending Carly"
+    },
+    {
+      "path": "guides/routing.md",
+      "title": "Routing Opens and Links"
+    },
+    {
+      "path": "guides/chrome.md",
+      "title": "Chrome and Styling"
+    },
+    {
+      "path": "guides/themes.md",
+      "title": "Custom Themes"
+    },
+    {
+      "path": "guides/layout.md",
+      "title": "Layout and Workspaces"
+    },
+    {
+      "path": "guides/io.md",
+      "title": "Files, Processes, and Storage"
+    },
+    {
+      "path": "guides/debugging.md",
+      "title": "Debugging"
+    },
+    {
+      "path": "guides/distribution.md",
+      "title": "Distribution"
+    },
+    {
+      "path": "elements/index.md",
+      "title": "Elements"
+    },
+    {
+      "path": "elements/layout.md",
+      "title": "Layout"
+    },
+    {
+      "path": "elements/text.md",
+      "title": "Text and Code"
+    },
+    {
+      "path": "elements/data.md",
+      "title": "Data"
+    },
+    {
+      "path": "elements/lists.md",
+      "title": "Lists, Menus and Navigation"
+    },
+    {
+      "path": "elements/motion.md",
+      "title": "Progress and Motion"
+    },
+    {
+      "path": "elements/input.md",
+      "title": "Inputs and Buttons"
+    },
+    {
+      "path": "elements/chrome.md",
+      "title": "Bars, Toasts and Overlays"
+    },
+    {
+      "path": "elements/work.md",
+      "title": "Agent, Chat and Task Kinds"
+    },
+    {
+      "path": "elements/el.md",
+      "title": "HTML Elements"
+    },
+    {
+      "path": "styles/index.md",
+      "title": "Styling Views"
+    },
+    {
+      "path": "styles/variables.md",
+      "title": "CSS Variables"
+    },
+    {
+      "path": "styles/css.md",
+      "title": "Supported CSS"
+    },
+    {
+      "path": "protocol/index.md",
+      "title": "Surface Protocol"
+    },
+    {
+      "path": "protocol/transport.md",
+      "title": "Transport"
+    },
+    {
+      "path": "protocol/handshake.md",
+      "title": "Handshake"
+    },
+    {
+      "path": "protocol/surfaces.md",
+      "title": "Surfaces"
+    },
+    {
+      "path": "protocol/documents.md",
+      "title": "Documents and Frames"
+    },
+    {
+      "path": "protocol/input.md",
+      "title": "Input and Events"
+    },
+    {
+      "path": "protocol/theme.md",
+      "title": "Stylesheets and Icons"
+    },
+    {
+      "path": "protocol/operations.md",
+      "title": "Flow Control, Persistence and Security"
+    },
+    {
+      "path": "protocol/sdks.md",
+      "title": "SDKs"
+    },
+    {
+      "path": "examples/index.md",
+      "title": "Example Plugins"
+    },
+    {
+      "path": "examples/terraform.md",
+      "title": "Terraform Plans"
+    },
+    {
+      "path": "examples/review-queue.md",
+      "title": "Review Queue"
+    },
+    {
+      "path": "examples/jsonx.md",
+      "title": "JSON Explorer"
+    },
+    {
+      "path": "examples/longrun.md",
+      "title": "Long-Running Commands"
+    },
+    {
+      "path": "examples/dirvars.md",
+      "title": "Directory Variables"
+    },
+    {
+      "path": "examples/workspaces.md",
+      "title": "Project Workspaces"
+    },
+    {
+      "path": "scripts/index.md",
+      "title": "Scripts"
+    },
+    {
+      "path": "scripts/harness.md",
+      "title": "Harness Commands"
+    },
+    {
+      "path": "scripts/control.md",
+      "title": "Control Commands"
+    },
+    {
+      "path": "scripts/terminal.md",
+      "title": "Terminal and Panes"
+    },
+    {
+      "path": "scripts/navigation.md",
+      "title": "Tabs and Navigation"
+    },
+    {
+      "path": "scripts/sessions.md",
+      "title": "Sessions and Blocks"
+    },
+    {
+      "path": "scripts/remote.md",
+      "title": "Remote Hosts"
+    },
+    {
+      "path": "scripts/prefs.md",
+      "title": "Preferences"
+    },
+    {
+      "path": "scripts/browser.md",
+      "title": "Browser Blocks"
+    },
+    {
+      "path": "scripts/pip.md",
+      "title": "Pictures in Picture"
+    },
+    {
+      "path": "scripts/files.md",
+      "title": "Files Pane"
+    },
+    {
+      "path": "scripts/file.md",
+      "title": "File Blocks"
+    },
+    {
+      "path": "scripts/procs.md",
+      "title": "Task Manager"
+    },
+    {
+      "path": "scripts/screen.md",
+      "title": "Screen Blocks"
+    },
+    {
+      "path": "scripts/git.md",
+      "title": "Git Blocks"
+    },
+    {
+      "path": "scripts/sqlite.md",
+      "title": "SQLite Blocks"
+    },
+    {
+      "path": "scripts/notebook.md",
+      "title": "Notebook Blocks"
+    },
+    {
+      "path": "scripts/board.md",
+      "title": "Board Blocks"
+    },
+    {
+      "path": "scripts/canvas.md",
+      "title": "Canvas Blocks"
+    },
+    {
+      "path": "scripts/profile.md",
+      "title": "Profile Blocks"
+    },
+    {
+      "path": "scripts/status.md",
+      "title": "Account, Updates and Kickoff"
+    },
+    {
+      "path": "scripts/carly.md",
+      "title": "Carly"
+    },
+    {
+      "path": "reference/api.md",
+      "title": "API Reference"
+    },
+    {
+      "path": "reference/api-shared.md",
+      "title": "Shared API"
+    },
+    {
+      "path": "reference/api-host.md",
+      "title": "Host API"
+    },
+    {
+      "path": "reference/api-window.md",
+      "title": "Window API"
+    },
+    {
+      "path": "reference/ui.md",
+      "title": "UI Builders"
+    },
+    {
+      "path": "reference/manifest.md",
+      "title": "Manifest Reference"
+    },
+    {
+      "path": "reference/events.md",
+      "title": "Events"
+    },
+    {
+      "path": "reference/actions.md",
+      "title": "Built-in Actions"
+    },
+    {
+      "path": "reference/cli.md",
+      "title": "Command Line"
+    },
+    {
+      "path": "reference/limits.md",
+      "title": "Limits"
+    },
+    {
+      "path": "reference/errors.md",
+      "title": "Errors"
+    },
+    {
+      "path": "reference/glossary.md",
+      "title": "Glossary"
+    }
+  ]
+}

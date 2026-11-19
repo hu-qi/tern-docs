@@ -212,7 +212,7 @@ class NormalizeZhTest(unittest.TestCase):
 class LinkCheckTest(unittest.TestCase):
     def setUp(self) -> None:
         self.tmp = tempfile.TemporaryDirectory()
-        self.dist = Path(self.tmp.name)
+        self.dist = Path(self.tmp.name).resolve()
         (self.dist / "assets").mkdir()
         (self.dist / "assets" / "pic.hash.png").write_bytes(b"png")
         (self.dist / "index.html").write_text('<a href="/tern-docs/guide">Guide</a>', encoding="utf-8")

@@ -31,11 +31,11 @@ Issue Agent 的可开发性结论：评级 ready，目标分支 `main`，方案�
 | --- | --- |
 | `ci/` 下不再有该工作流文件；`.github/workflows/deploy.yml` 为唯一规范位置 | 本分支删除 `ci/` 副本；工作流文件由具备 `workflow` 权限的账号补交（自动化 token 推送被 GitHub 拒绝，见 §4） |
 | 工作流内容与原文件一致 | 仅替换首行「本文件需移动才生效」的过期注释，YAML 逻辑逐字不变（`diff` 除首行外无差异） |
-| `README.md`、`ci/README.md` 不再出现「需手动移动文件才生效」类表述 | 两处部署说明改写为「工作流已生效」 |
+| `README.md`、`ci/README.md` 不再出现「需手动移动文件才生效」类表述 | 两处部署说明改写为「规范位置 + 当前待补交」，并写明补交前推送不会触发部署；文件补交后改回「已生效」 |
 | push `main` / `workflow_dispatch` 触发 `Deploy docs to GitHub Pages`，build 与 deploy 均成功 | 工作流原样迁移，触发条件与作业图不变 |
 | `https://<owner>.github.io/tern-docs/` 与 `/zh/` 可访问，语言菜单可互切 | 站点既有能力，发布后由 sre 线上核对 |
 | `workflow_dispatch` 可重复发布，无并发部署冲突 | 保留 `concurrency: group: pages, cancel-in-progress: false` |
-| 现有测试 `npm test` 全部通过 | 新增守护测试后仍全绿（27 → 29 项 Python 用例 + 6 项 node 用例） |
+| 现有测试 `npm test` 全部通过 | 新增守护测试后仍全绿（27 → 31 项 Python 用例 + 6 项 node 用例） |
 
 ## 4. 约束与风险
 

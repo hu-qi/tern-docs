@@ -275,5 +275,48 @@ class SiteMapDocumentTest(unittest.TestCase):
                 gen_site_map.ZH = original
 
 
+class WorkflowLocationTest(unittest.TestCase):
+    """部署工作流只允许一个规范位置：.github/workflows/deploy.yml。
+
+    工作流文件的提交需要 token 具备 `workflow` 权限，因此本用例在文件尚未补交时
+    只校验「ci/ 下的过渡副本已移除」与「文档指向规范路径」；文件已存在时再校验
+    触发条件、权限、并发与双作业没有漂移。
+    """
+
+    WORKFLOW = ROOT / ".github" / "workflows" / "deploy.yml"
+    LEGACY = ROOT / "ci" / "github-pages-deploy.yml"
+
+    def test_legacy_copy_removed(self) -> None:
+        self.assertFalse(self.LEGACY.exists(), "ci/ 下不应再保留工作流副本")
+
+    def test_docs_point_to_canonical_workflow(self) -> None:
+        for name in ("README.md", os.path.join("ci", "README.md")):
+            text = (ROOT / name).read_text(encoding="utf-8")
+            self.assertIn(".github/workflows/deploy.yml", text, f"{name} 未指向规范工作流路径")
+            self.assertNotIn("移动", text, f"{name} 仍在描述手工移动工作流文件")
+
+    def test_workflow_keeps_triggers_permissions_and_jobs(self) -> None:
+        if not self.WORKFLOW.is_file():
+            self.skipTest(".github/workflows/deploy.yml 尚未补交，跳过作业图核对")
+        text = self.WORKFLOW.read_text(encoding="utf-8")
+        for expected in (
+            "name: Deploy docs to GitHub Pages",
+            "branches: [main]",
+            "workflow_dispatch:",
+            "permissions:",
+            "pages: write",
+            "id-token: write",
+            "concurrency:",
+            "group: pages",
+            "cancel-in-progress: false",
+            "  build:",
+            "  deploy:",
+            "    needs: build",
+            "actions/upload-pages-artifact@v3",
+            "actions/deploy-pages@v4",
+        ):
+            self.assertIn(expected, text)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -1,23 +1,24 @@
 # GitHub Pages 部署工作流
 
-此文件与 `.github/workflows/deploy.yml` 的内容完全一致，放在 `ci/` 下是因为创建
-`.github/workflows/` 下的文件需要 GitHub token 具备 `workflow` 权限；当前自动化任务的
-token 不具备该权限，推送会被拒绝（`refusing to allow a Personal Access Token to create or
-update workflow ... without workflow scope`）。
+部署工作流位于 [`.github/workflows/deploy.yml`](../.github/workflows/deploy.yml)。
+GitHub 只识别 `.github/workflows/` 下的工作流，因此它在该位置才会被触发。
 
-启用方式（二选一，均为一次性人工操作）：
+触发方式：向 `main` 推送，或在 Actions 页面手动执行 `workflow_dispatch`。
 
-1. 仓库 **Settings → Actions → General** 允许 Actions 后，把本文件移动到工作流目录：
-   ```bash
-   git mv ci/github-pages-deploy.yml .github/workflows/deploy.yml
-   git commit -m "ci: enable GitHub Pages deployment"
-   git push
-   ```
-2. 或在 GitHub 网页端直接新建 `.github/workflows/deploy.yml`，粘贴本文件内容。
+工作流内容：`npm ci` → 单元测试 → 译文回退/锚点/插图规范化 → 译文一致性校验 →
+构建 → 站内链接校验 → `actions/upload-pages-artifact` + `actions/deploy-pages`。
+`build` / `deploy` 双作业，`concurrency: group: pages`，
+`permissions: contents: read / pages: write / id-token: write`。
 
-首次部署还需要在 **Settings → Pages → Build and deployment → Source** 选择
-**GitHub Actions**，否则 `deploy` 作业会因 Pages 未启用而失败。
+首次发布前的一次性人工操作：在 **Settings → Pages → Build and deployment → Source**
+选择 **GitHub Actions**，否则 `deploy` 作业会因 Pages 未启用而失败。
 
-工作流内容：`push(main)` / `workflow_dispatch` → `npm ci` → 单元测试 →
-译文回退/锚点/插图规范化 → 译文一致性校验 → 构建 → 站内链接校验 →
-`actions/upload-pages-artifact` + `actions/deploy-pages`。
+## 历史背景：为什么工作流曾放在 ci/
+
+创建或更新 `.github/workflows/` 下的文件需要 GitHub token 具备 `workflow` 权限，
+而此前的自动化账号不具备该权限，推送会被拒绝（`refusing to allow a Personal Access Token
+to create or update workflow ... without workflow scope`）。为此工作流一度以副本形式存放于
+`ci/` 下，等待具备该权限的账号提交；现已在 `.github/workflows/deploy.yml` 生效，`ci/` 下
+不再保留副本。
+
+> 后续若由自动化账号修改该工作流，仍需 token 具备 `workflow` 权限；否则请由维护者账号提交。
